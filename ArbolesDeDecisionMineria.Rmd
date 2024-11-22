@@ -1,0 +1,101 @@
+Hoja de Trabajo árboles
+Gabriela Molina
+Minería de Datos
+
+```{r}
+#Librerías necesarias
+install.packages("rpart")
+install.packages("rpart.plot")
+
+library(rpart)
+library(rpart.plot)
+```
+
+
+```{r}
+## Carga de archivos .csv
+
+vivienda <- read.csv('../VIVIENDA_BDP.csv', sep = ',')
+hogar <- read.csv('../HOGAR_BDP.csv', sep = ',')
+```
+
+##Manejo de desechos en las áreas
+
+```{r}
+# --Desechos--
+
+desechos <- rpart(AREA ~
+                 PCH7+
+                 PCH9_F+
+                 PCH10+
+                 PCH5+
+                 PCH8,
+               data = hogar, method = "class")
+
+
+
+rpart.plot(desechos, type=2, extra=0, under = TRUE, fallen.leaves = TRUE, box.palette = "BuGn", 
+           main ="Predicción por manejo de desechos", cex = 0.45)
+
+entrenamiento
+casa2 <- data.frame(
+  PCH7=c(2),
+  PCH9_F=c(1),
+  PCH10=c(6),
+  PCH5=c(2),
+  PCH8=c(2)
+)
+
+result2 <- predict(desechos,casa2, type="class")
+result2
+```
+
+##Servicios de Agua por área
+
+```{r}
+#Agua por área
+arbol4 <- rpart(AREA ~
+                  PCH4+
+                  PCH1+
+                  PCH9_F+
+                  PCH9_G+
+                  PCH9_K+
+                  PCH8,
+                data = hogar, method = "class")
+
+
+rpart.plot(arbol4, type=2, extra=0, under = TRUE, fallen.leaves = TRUE, box.palette = "BuGn", 
+           main ="Servicio de Agua area", cex = 1)
+```
+##Predicción de área por data vivienda
+
+```{r}
+arbol <- rpart(AREA ~
+               PCV1+
+               PCV2+
+               PCV3+
+               PCV4+
+               PCV5,
+               data = vivienda, method = "class")
+
+rpart.plot(arbol, type=2, extra=0, under = TRUE, fallen.leaves = TRUE, box.palette = "BuGn", 
+           main ="Predicción de area", cex = 1)
+
+casa <- data.frame(
+  PCV1=c(2),
+  PCV2=c(3),
+  PCV3=c(1),
+  PCV4=c(1),
+  PCV5=c(1)
+  )
+
+result <- predict(arbol,casa, type="class")
+
+result
+```
+
+
+```{r}
+
+```
+
