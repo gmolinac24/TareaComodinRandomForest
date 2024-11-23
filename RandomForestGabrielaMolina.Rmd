@@ -1,0 +1,111 @@
+---
+title: "Bosques de decisión"
+Gabriela Maryorie Molina Castillo
+
+---
+Declarando librerías
+```{r}
+#install.packages("randomForest")
+library(randomForest)
+library (dplyr)
+```
+
+Importando archivos de migración
+
+```{r}
+migra <- read.csv('MIGRACION_BDP.csv', sep = ',')
+migra <- na.omit(migra)
+```
+
+Ver tipos de datos
+```{r}
+mode(migra)
+```
+Tomando valores para analizar la data
+
+```{r}
+migra_an <- migra[, c("DEPARTAMENTO", "AREA", "PEI3", "PEI4", "PEI5" )]
+
+#Convirtiendo en factor el departamento, agrupa por categorías
+migra_an$DEPARTAMENTO <- as.factor(migra_an$DEPARTAMENTO)
+```
+
+Realizando semillas
+
+```{r}
+set.seed(100)
+migra_an <- migra_an[sample(1:nrow(migra_an)),]
+index <- sample(1:nrow(migra_an), 0.80*nrow(migra_an))
+```
+
+Datos de entrenamiento
+```{r}
+train <- migra_an[index,]
+test <- migra_an[-index,]
+```
+
+```{r}
+bosque <- randomForest(DEPARTAMENTO ~ PEI3 +PEI4 +PEI5,
+                       data = train,
+                       ntree = 500,
+                       mtry = 10
+                       )
+entreno <- predict(bosque, test)
+entreno
+```
+
+Prediciendo datos
+
+```{r}
+i_dato <- data.frame(
+    AREA = 1,
+    PEI3 = 1,
+    PEI4 = 40,
+    PEI5 = 9999
+     
+)
+```
+Predicción
+
+```{r}
+prediccion <- predict(bosque, i_dato)
+prediccion
+```
+```{r}
+i_dato2 <- data.frame(
+    AREA = 1,
+    PEI3 = 2,
+    PEI4 = 25,
+    PEI5 = 2015
+)
+
+prediccion2 <- predict(bosque, i_dato2)
+prediccion2
+```
+Predicción 2
+```{r}
+i_dato2 <- data.frame(
+    AREA = 2,
+    PEI3 = 2,
+    PEI4 = 25,
+    PEI5 = 2015
+)
+
+prediccion3 <- predict(bosque, i_dato)
+prediccion2
+```
+
+Predicción 3
+
+```{r}
+i_dato3 <- data.frame(
+    AREA = 2,
+    PEI3 = 2,
+    PEI4 = 70,
+    PEI5 = 2014
+)
+
+prediccion3 <- predict(bosque, i_dato3)
+prediccion3
+```
+
